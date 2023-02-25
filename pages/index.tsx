@@ -119,7 +119,11 @@ function suicaXrBeanParse(rawText: string) {
     .replace(/ /g, "")
     .replace(/\n\n/g, "\n")
     .replace(
-      /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+      /(\d\d\d\d)\/(\d\d)\/(\d\d)/,
+      (_, yyyy, MM, dd) => yyyy + "-" + MM + "-" + dd
+    )
+    .replace(
+      /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d)-(\d\d)-(\d\d)/g,
       (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
         const sign = signal.startsWith("+") ? 1 : -1;
         const cost = -sign * Number(money.replace(/,/, ""));
