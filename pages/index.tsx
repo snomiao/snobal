@@ -129,11 +129,11 @@ function suicaXrBeanParse(rawText: string) {
         const cost = -sign * Number(money.replace(/,/, ""));
         const payee = noteLine.match("-交通機関") ? "交通機関" : "UNKNOWN";
         const notes = [
-          pos,
           (noteLine as string)
             .trim()
             .replace(/^[E風回.](.*?駅)/, (_, cho) => cho)
             .replace(/-交通機関$/, ""),
+          pos,
         ]
           .filter(Boolean)
           .join(" ");
