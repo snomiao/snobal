@@ -43,7 +43,7 @@ export default function Home() {
         {
           const lang = "eng+jpn";
           setLoading((loading) => loading + 1);
-          
+          toast('Image pasted! processing')
           Tesseract.recognize(img, lang)
             .then(async (job) => {
               console.log(job);
