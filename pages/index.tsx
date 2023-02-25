@@ -120,11 +120,11 @@ function suicaXrBeanParse(rawText: string) {
     .replace(/\n\n/g, "\n")
     .replace(
       /(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
-      (_, yyyy, MM, dd) => yyyy + "-" + MM + "-" + dd
+      (_, yyyy, MM, dd) => `${yyyy}-${MM}-${dd}`
     )
     .replace(
-      /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d)-(\d\d)-(\d\d)/g,
-      (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
+      /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d-\d\d-\d\d)/g,
+      (_, pos, signal, money, noteLine, yyyyMMdd) => {
         const sign = signal.startsWith("+") ? 1 : -1;
         const cost = -sign * Number(money.replace(/,/, ""));
         const payee = noteLine.match("-交通機関") ? "交通機関" : "UNKNOWN";
@@ -138,7 +138,7 @@ function suicaXrBeanParse(rawText: string) {
           .filter(Boolean)
           .join(" ");
         const s = [
-          `${yyyy}-${MM}-${dd} * "${payee}" "${notes}"`,
+          `${yyyyMMdd} * "${payee}" "${notes}"`,
           cost < 0 &&
             `   Equity:Receivable:Assets:SuicaXR ${cost.toFixed(2)} JPY`,
           `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
