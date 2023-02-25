@@ -46,58 +46,12 @@ export default function Home() {
           Tesseract.recognize(img, lang)
             .then(async (job) => {
               console.log(job);
-              const diff1 = "①".charCodeAt(0) - "1".charCodeAt(0);
-              const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
-              const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
-              const text = job.data.text
-                .replace(/[①-⑨]/g, (ch) =>
-                  String.fromCharCode(ch.charCodeAt(0) - diff1)
-                )
-                .replace(
-                  /[⑩-⑲]/g,
-                  (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
-                )
-                .replace(
-                  /[⑳]/g,
-                  (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
-                )
-                .replace(/ /g, "")
-                .replace(/\n\n/g, "\n")
-                .replace(
-                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
-                  (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
-                    const sign = signal.startsWith("+") ? 1 : -1;
-                    const cost = -sign * Number(money.replace(/,/, ""));
-                    const payee = noteLine.match("-交通機関")
-                      ? "交通機関"
-                      : "UNKNOWN";
-                    const notes = [
-                      pos,
-                      (noteLine as string)
-                        .trim()
-                        .replace(/^[E風回.](.*?駅)/, (_, cho) => cho)
-                        .replace(/-交通機関$/, ""),
-                    ]
-                      .filter(Boolean)
-                      .join(" ");
-                    const s = [
-                      `${yyyy}-${MM}-${dd} * "${payee}" "${notes}"`,
-                      cost < 0 &&
-                        `   Equity:Receivable:Assets:SuicaXR ${cost.toFixed(
-                          2
-                        )} JPY`,
-                      `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
-                      cost > 0 && `   Expenses:Commute ${cost.toFixed(2)} JPY`,
-                    ]
-                      .filter(Boolean)
-                      .join("\n");
-                    return lineReversed(s);
-                  }
-                )
-                .replace(/(.*\n)+/, lineReversed)
-                .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
+              const text = job.data.text;
               setText((t) => {
-                const newText = [t, text].filter(Boolean).join("\n");
+                const newText = [t, text]
+                  .filter(Boolean)
+                  .join("\n")
+                  .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
                 navigator.clipboard.writeText(newText);
                 return newText;
               });
@@ -128,11 +82,11 @@ export default function Home() {
             await navigator.clipboard.writeText(text);
             toast.success("text copied");
           }}
-          className="w-[500px] h-[80em]"
-          style={{ width: "500px" }}
+          className="w-[40vw] h-[80em]"
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
         />
+        <pre className="w-[40vw] h-[80em]">{suicaXrBeanParse(text)}</pre>
         <div className="w-[500px] h-[500px]">
           <canvas ref={canvasRef} className="hidden" />
         </div>
@@ -140,6 +94,53 @@ export default function Home() {
     </div>
   );
 }
+function suicaXrBeanParse(rawText: string) {
+  const diff1 = "①".charCodeAt(0) - "1".charCodeAt(0);
+  const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
+  const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
+  const text = rawText
+    .replace(/[①-⑨]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - diff1))
+    .replace(
+      /[⑩-⑲]/g,
+      (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
+    )
+    .replace(
+      /[⑳]/g,
+      (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
+    )
+    .replace(/ /g, "")
+    .replace(/\n\n/g, "\n")
+    .replace(
+      /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?(\n.*?\n|\n)(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+      (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
+        const sign = signal.startsWith("+") ? 1 : -1;
+        const cost = -sign * Number(money.replace(/,/, ""));
+        const payee = noteLine.match("-交通機関") ? "交通機関" : "UNKNOWN";
+        const notes = [
+          pos,
+          (noteLine as string)
+            .trim()
+            .replace(/^[E風回.](.*?駅)/, (_, cho) => cho)
+            .replace(/-交通機関$/, ""),
+        ]
+          .filter(Boolean)
+          .join(" ");
+        const s = [
+          `${yyyy}-${MM}-${dd} * "${payee}" "${notes}"`,
+          cost < 0 &&
+            `   Equity:Receivable:Assets:SuicaXR ${cost.toFixed(2)} JPY`,
+          `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
+          cost > 0 && `   Expenses:Commute ${cost.toFixed(2)} JPY`,
+        ]
+          .filter(Boolean)
+          .join("\n");
+        return lineReversed(s);
+      }
+    )
+    .replace(/(.*\n)+/, lineReversed);
+  return text;
+}
+
 function lineReversed(s: string): string {
   return s.split("\n").reverse().join("\n");
 }
