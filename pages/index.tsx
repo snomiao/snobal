@@ -68,14 +68,17 @@ export default function Home() {
                   (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
-                    const notes = (noteLine as string)
-                      .trim()
-                      .replace(/( )[E風回](.*?駅)/, (_, s, cho) => s + cho);
+                    const notes = [
+                      pos,
+                      (noteLine as string)
+                        .trim()
+                        .replace(/( )[E風回](.*?駅)/, (_, s, cho) => s + cho),
+                    ].filter(Boolean).join(" ");
                     const payee = notes.match("交通機関")
                       ? "交通機関"
                       : "UNKNOWN";
                     const s = [
-                      `${yyyy}-${MM}-${dd} * "${payee}" "${pos} ${notes}"`,
+                      `${yyyy}-${MM}-${dd} * "${payee}" "${notes}"`,
                       cost < 0 &&
                         `   Equity:Receivable:Assets:SuicaXR ${cost.toFixed(
                           2
