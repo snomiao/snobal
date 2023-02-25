@@ -43,7 +43,7 @@ export default function Home() {
         {
           const lang = "eng+jpn";
           setLoading((loading) => loading + 1);
-          toast('Image pasted! processing')
+          toast("Image pasted! processing");
           Tesseract.recognize(img, lang)
             .then(async (job) => {
               console.log(job);
@@ -75,7 +75,8 @@ export default function Home() {
                       `   Expenses:Commute ${cost.toFixed(2)} JPY`,
                     ].join("\n");
                   }
-                );
+                )
+                .replace(/ E(.*?駅)/, (_, cho) => cho);
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
                 navigator.clipboard.writeText(newText);
