@@ -64,7 +64,7 @@ export default function Home() {
                 .replace(/ /g, "")
                 .replace(/\n\n/g, "\n")
                 .replace(
-                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?\n(?:(.*?)\n)?(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
