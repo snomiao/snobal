@@ -25,23 +25,24 @@ export default function Home() {
         // const blob = item.getAsFile (item.type);
         const img = new Image();
         img.onload = function () {
-          const w = 500;
-          const h = img.height * (w / img.width);
-          canvas.width = w; //img.width;
-          canvas.height = h; //img.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            toast.error("ctx not found");
-            return;
-          }
-          ctx.drawImage(img, 0, 0, w, h);
+          // just for debug
+          // const w = 500;
+          // const h = img.height * (w / img.width);
+          // canvas.width = w; //img.width;
+          // canvas.height = h; //img.height;
+          // const ctx = canvas.getContext("2d");
+          // if (!ctx) {
+          //   toast.error("ctx not found");
+          //   return;
+          // }
+          // ctx.drawImage(img, 0, 0, w, h);
           // const base64 = canvas.toDataURL("image/png");
           // console.log(base64); // base64-encoded image string
           // ctx.clip = base64;
         };
         img.src = URL.createObjectURL(blob);
         {
-          const lang = "jpn+eng";
+          const lang = "eng+jpn";
           setText("loading");
           Tesseract.recognize(img, lang)
             .then((job) => {
@@ -63,14 +64,13 @@ export default function Home() {
     return () => document.body.removeEventListener("paste", onPaste);
   });
   return (
-    <>
-      <h1>Paste images here to recognize</h1>
-      <div className="w-[500px] h-[500px]">
-        <canvas tabIndex={0} ref={canvasRef} />
-      </div>
-
+    <div>
+      <h1>Paste images here to recognize to text</h1>
       <pre>{text}</pre>
+      <div className="w-[500px] h-[500px]">
+        <canvas tabIndex={0} ref={canvasRef} className="hidden" />
+      </div>
       <button className="btn btn-primary">{"Retry"}</button>
-    </>
+    </div>
   );
 }
