@@ -119,7 +119,7 @@ function suicaXrBeanParse(rawText: string) {
     .replace(/ /g, "")
     .replace(/\n\n/g, "\n")
     .replace(
-      /(\d\d\d\d)\/(\d\d)\/(\d\d)/,
+      /(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
       (_, yyyy, MM, dd) => yyyy + "-" + MM + "-" + dd
     )
     .replace(
