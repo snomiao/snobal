@@ -64,19 +64,25 @@ export default function Home() {
                 .replace(/ /g, "")
                 .replace(/\n\n/g, "\n")
                 .replace(
-                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?\n(?:(.*?)\n)?(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
-                  (_, pos, signal, money, note, yyyy, MM, dd) => {
+                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?\n(.*?\n)?(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+                  (_, pos, signal, money, noteLine, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
-                    const notes = (note as string).replace(
+                    const notes = (noteLine as string).replace(
                       /( )[E風回](.*?駅)/,
                       (_, s, cho) => s + cho
                     );
                     const s = [
                       `${yyyy}-${MM}-${dd} * "TODO" "${pos} ${notes}"`,
+                      cost < 0 &&
+                        `   Equity:Receivable:Assets:SuicaXR ${cost.toFixed(
+                          2
+                        )} JPY`,
                       `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
-                      `   Expenses:Commute ${cost.toFixed(2)} JPY`,
-                    ].join("\n");
+                      cost > 0 && `   Expenses:Commute ${cost.toFixed(2)} JPY`,
+                    ]
+                      .filter(Boolean)
+                      .join("\n");
                     return lineReversed(s);
                   }
                 )
