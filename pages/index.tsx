@@ -5,6 +5,8 @@ import Tesseract from "tesseract.js";
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [text, setText] = useState("...");
+  
+
   const [loading, setLoading] = useState(0);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -69,6 +71,9 @@ export default function Home() {
             })
             .catch((error) => {
               console.log(error);
+            })
+            .finally(() => {
+              setLoading((loading) => loading + 1);
             });
 
           // const ctx = canvas.getContext();
@@ -82,7 +87,7 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
-      {loading && <>⏳ Processing: ${loading}</>}
+      {loading && <>⏳ Processing: {loading}</>}
       <pre tabIndex={0} onClick={() => navigator.clipboard.writeText(text)}>
         {text}
       </pre>
