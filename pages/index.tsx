@@ -1,7 +1,5 @@
-import styles from "@/styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
-// Import Tesseract.js library
 import Tesseract from "tesseract.js";
 
 export default function Home() {
@@ -68,62 +66,4 @@ export default function Home() {
       <button className="btn btn-primary">{"Retry"}</button>
     </>
   );
-}
-
-// Function to read image from clipboard
-function readImageFromClipboard() {
-  return new Promise((resolve, reject) => {
-    navigator.clipboard
-      .read()
-      .then((items) => {
-        // Get the first item from clipboard
-        const item = items[0];
-        console.log(items);
-        // Check if the item is an image
-        // if (item.types.indexOf('image') === 0) {
-        //   // Read the image file
-        //   // item.getBlob().then(blob => {
-        //   //   // Create a new image element
-        //   //   const img = new Image();
-
-        //   //   // Set the source of the image to the blob URL
-        //   //   img.src = URL.createObjectURL(blob);
-
-        //   //   // Wait for the image to load
-        //   //   img.onload = () => {
-        //   //     resolve(img);
-        //   //   };
-
-        //   //   // Handle image loading errors
-        //   //   img.onerror = (e) => {
-        //   //     reject(e);
-        //   //   };
-        //   // });
-        //   // item.getType().then(type => {
-        //   //   item.getType().then(type => {
-        //   //     item.getType().then(type => {
-        //   //       item.getType().then(type => {
-        //   //         item.getType().then(type => {
-        //   //           item.getType().then(type => {
-        //   //             item.getType().then(type => {
-        //   //               item.getType().then(type => {
-        //   //                 item.getType().then(type => {
-        //   //                 });
-        //   //               });
-        //   //             });
-        //   //           });
-        //   //         });
-        //   //       });
-        //   //     });
-        //   //   });
-        //   // });
-        // // } else {
-        // //   reject(new Error('Clipboard item is not an image.'));
-        // // }
-        // }
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
 }
