@@ -62,8 +62,18 @@ export default function Home() {
                 )
                 .replace(/ /g, "")
                 .replace(/\n\n/g, "\n")
-                .replace(/(.*?)\n(.*?)\n(\d\d\d\d\/\d\d\/\d\d)/g, "\n")
-                ;
+                .replace(
+                  /(.*?)(\+?¥)([\d,]+)\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+                  (_, pos, signal, money, note, yyyy, MM, dd) => {
+                    const sign = signal.startsWith("+") ? 1 : -1;
+                    const cost = sign * Number(money.replace(/,/, ""));
+                    return [
+                      `${yyyy}-${MM}-${dd} * "TODO" "${pos} ${note}"`,
+                      `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
+                      `   Expenses:Commute ${cost.toFixed(2)} JPY`,
+                    ].join("\n");
+                  }
+                );
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
                 navigator.clipboard.writeText(newText);
@@ -89,11 +99,14 @@ export default function Home() {
     <div>
       <h1>Paste images here to recognize to text</h1>
       {loading && <>⏳ Processing: {loading}</>}
-      <pre tabIndex={0} onClick={() => navigator.clipboard.writeText(text)}>
+      <textarea
+        tabIndex={0}
+        onClick={() => navigator.clipboard.writeText(text)}
+      >
         {text}
-      </pre>
+      </textarea>
       <div className="w-[500px] h-[500px]">
-        <canvas tabIndex={0} ref={canvasRef} className="hidden" />
+        <canvas ref={canvasRef} className="hidden" />
       </div>
       <button className="btn btn-primary">{"Retry"}</button>
     </div>
