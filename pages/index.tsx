@@ -106,6 +106,7 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
+      {!!loading && <div>⏳ Processing: {loading}</div>}
       <div className="flex flex-row">
         <textarea
           tabIndex={0}
@@ -122,7 +123,6 @@ export default function Home() {
           <canvas ref={canvasRef} className="hidden" />
         </div>
       </div>
-      {!!loading && <div>⏳ Processing: {loading}</div>}
     </div>
   );
 }
