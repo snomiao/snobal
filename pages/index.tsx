@@ -41,7 +41,7 @@ export default function Home() {
         {
           const lang = "jpn+eng";
 
-          setText('loading');
+          setText("loading");
           Tesseract.recognize(img, lang)
             .then((job) => {
               console.log(job);
@@ -59,10 +59,13 @@ export default function Home() {
     document.body.addEventListener("paste", onPaste);
     return () => document.body.removeEventListener("paste", onPaste);
   });
+
   return (
     <>
       <h1>Paste images here to recognize</h1>
-      <canvas tabIndex={0} ref={canvasRef} className="w-[500px] h-[500px]" />
+      <div className="w-[500px] h-[500px]">
+        <canvas tabIndex={0} ref={canvasRef} />
+      </div>
 
       <pre>{text}</pre>
       <button className="btn btn-primary">{"Retry"}</button>
