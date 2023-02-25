@@ -69,13 +69,15 @@ export default function Home() {
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
-                    return [
+                    const s = [
                       `${yyyy}-${MM}-${dd} * "TODO" "${pos} ${note}"`,
                       `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
                       `   Expenses:Commute ${cost.toFixed(2)} JPY`,
                     ].join("\n");
+                    return lineReversed(s);
                   }
                 )
+                .replace(/(.*\n)+/, lineReversed)
                 .replace(/ E(.*?駅)/, (_, cho) => cho);
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
@@ -118,4 +120,7 @@ export default function Home() {
       </div>
     </div>
   );
+}
+function lineReversed(s: string): string {
+  return s.split("\n").reverse().join("\n");
 }
