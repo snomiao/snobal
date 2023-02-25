@@ -75,7 +75,7 @@ export default function Home() {
                       pos,
                       (noteLine as string)
                         .trim()
-                        .replace(/^[E風回](.*?駅)/, (_, cho) => cho)
+                        .replace(/^[E風回.](.*?駅)/, (_, cho) => cho)
                         .replace(/-交通機関$/, ""),
                     ]
                       .filter(Boolean)
