@@ -4,7 +4,6 @@ import Tesseract from "tesseract.js";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("; ");
   const [loading, setLoading] = useState(0);
   useEffect(() => {
@@ -69,7 +68,7 @@ export default function Home() {
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
-                    const notes = (note as string) .replace(
+                    const notes = (note as string).replace(
                       /( )[E風](.*?駅)/,
                       (_, s, cho) => s + cho
                     );
@@ -107,21 +106,24 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
-      <div className="flex flex-col">
-        {!!loading && <div>⏳ Processing: {loading}</div>}
+      <div className="flex flex-row">
         <textarea
           tabIndex={0}
-          onDoubleClick={() => navigator.clipboard.writeText(text)}
-          className="w-[500px] h-[500px]"
+          onDoubleClick={async () => {
+            await navigator.clipboard.writeText(text);
+            toast.success("text copied");
+          }}
+          className="w-[500px] h-[120em]"
+          style={{ width: "500px" }}
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
-          rows={30}
+          rows={120}
         />
         <div className="w-[500px] h-[500px]">
           <canvas ref={canvasRef} className="hidden" />
         </div>
-        <button className="btn btn-primary">{"Retry"}</button>
       </div>
+      {!!loading && <div>⏳ Processing: {loading}</div>}
     </div>
   );
 }

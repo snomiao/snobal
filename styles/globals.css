@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 button {
   @apply flex w-10 h-10;
 }
