@@ -45,11 +45,23 @@ export default function Home() {
           const lang = "eng+jpn";
           setText("loading");
           Tesseract.recognize(img, lang)
-            .then((job) => {
+            .then(async (job) => {
               console.log(job);
-              const text = job.data.text.replace(/⑳②②/,'');
+              const diff1 = "①".charCodeAt(0) - "1".charCodeAt(0);
+              const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
+              const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
+              const text = job.data.text
+                .replace(/[①-⑨]/, (ch) =>
+                  String.fromCharCode(ch.charCodeAt(0) - diff1)
+                )
+                .replace(/[⑩-⑲]/, (ch) =>
+                  String.fromCharCode(ch.charCodeAt(0) - diff2)
+                )
+                .replace(/[⑳]/, (ch) =>
+                  String.fromCharCode(ch.charCodeAt(0) - diff3)
+                );
               setText(text);
-              new Clipboard().writeText(text);
+              await new Clipboard().writeText(text);
             })
             .catch((error) => {
               console.log(error);
