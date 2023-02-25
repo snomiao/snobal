@@ -48,17 +48,17 @@ export default function Home() {
               const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
               const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
               const text = job.data.text
-                .replace(/[①-⑨]/g, (ch) =>
-                  String.fromCharCode(ch.charCodeAt(0) - diff1)
-                )
-                .replace(
-                  /[⑩-⑲]/g,
-                  (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
-                )
-                .replace(
-                  /[⑳]/g,
-                  (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
-                );
+              .replace(/[①-⑨]/g, (ch) =>
+                String.fromCharCode(ch.charCodeAt(0) - diff1)
+              )
+              .replace(
+                /[⑩-⑲]/g,
+                (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
+              )
+              .replace(
+                /[⑳]/g,
+                (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
+              ).replace(/ /g, '')
               setText(text);
               await navigator.clipboard.writeText(text);
             })
