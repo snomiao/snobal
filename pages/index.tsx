@@ -72,8 +72,10 @@ export default function Home() {
                       pos,
                       (noteLine as string)
                         .trim()
-                        .replace(/( )[E風回](.*?駅)/, (_, s, cho) => s + cho),
-                    ].filter(Boolean).join(" ");
+                        .replace(/^[E風回](.*?駅)/, (_, cho) => cho),
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
                     const payee = notes.match("交通機関")
                       ? "交通機関"
                       : "UNKNOWN";
