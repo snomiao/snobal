@@ -75,21 +75,29 @@ export default function Home() {
     <div>
       <h1>Paste images here to recognize to text</h1>
       {!!loading && <div>⏳ Processing: {loading}</div>}
-      <div className="flex flex-row">
+      <div className="flex flex-row justify-evenly">
         <textarea
           tabIndex={0}
-          onDoubleClick={async () => {
-            await navigator.clipboard.writeText(text);
-            toast.success("text copied");
-          }}
-          className="w-[40vw] h-[80em]"
+          // onDoubleClick={async () => {
+          //   await navigator.clipboard.writeText(text);
+          //   toast.success("text copied");
+          // }}
+          className="flex-1 h-[80em]"
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
         />
-        <pre className="w-[40vw] h-[80em]">{suicaXrBeanParse(text)}</pre>
-        <div className="w-[500px] h-[500px]">
-          <canvas ref={canvasRef} className="hidden" />
-        </div>
+        <pre
+          className="flex-1 h-[80em]"
+          onClick={async () => {
+            await navigator.clipboard.writeText(suicaXrBeanParse(text));
+            toast.success("text copied");
+          }}
+        >
+          {suicaXrBeanParse(text)}
+        </pre>
+      </div>
+      <div className="w-[500px] h-[500px]">
+        <canvas ref={canvasRef} className="hidden" />
       </div>
     </div>
   );
