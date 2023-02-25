@@ -65,7 +65,7 @@ export default function Home() {
                 .replace(/ /g, "")
                 .replace(/\n\n/g, "\n")
                 .replace(
-                  /(.*?)(\+?[¥\\])([\d,y]+)(?:・_)?\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+                  /(.*?)(\+?[¥\\y])([\d,]+)(?:・_)?\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
@@ -101,7 +101,7 @@ export default function Home() {
     <div>
       <h1>Paste images here to recognize to text</h1>
       <div className="flex flex-col">
-        {loading && <div>⏳ Processing: {loading}</div>}
+        {!!loading && <div>⏳ Processing: {loading}</div>}
         <textarea
           tabIndex={0}
           onDoubleClick={() => navigator.clipboard.writeText(text)}
