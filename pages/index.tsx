@@ -39,8 +39,10 @@ export default function Home() {
         };
         img.src = URL.createObjectURL(blob);
         {
-          const lang = "jpn";
-          Tesseract.recognize(img,lang,{})
+          const lang = "jpn+eng";
+
+          setText('loading');
+          Tesseract.recognize(img, lang)
             .then((job) => {
               console.log(job);
               setText(job.data.text);
