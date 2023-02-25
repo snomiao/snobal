@@ -43,6 +43,7 @@ export default function Home() {
         {
           const lang = "eng+jpn";
           setLoading((loading) => loading + 1);
+          
           Tesseract.recognize(img, lang)
             .then(async (job) => {
               console.log(job);
@@ -85,7 +86,7 @@ export default function Home() {
               console.log(error);
             })
             .finally(() => {
-              setLoading((loading) => loading + 1);
+              setLoading((loading) => loading - 1);
             });
 
           // const ctx = canvas.getContext();
@@ -99,18 +100,21 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
-      {loading && <>⏳ Processing: {loading}</>}
-      <textarea
-        tabIndex={0}
-        onDoubleClick={() => navigator.clipboard.writeText(text)}
-        value={text}
-        onChange={(e)=>setText(e.currentTarget.value)}
-        rows={30}
-      />
-      <div className="w-[500px] h-[500px]">
-        <canvas ref={canvasRef} className="hidden" />
+      <div className="flex flex-col">
+        {loading && <div>⏳ Processing: {loading}</div>}
+        <textarea
+          tabIndex={0}
+          onDoubleClick={() => navigator.clipboard.writeText(text)}
+          className="w-[500px] h-[500px]"
+          value={text}
+          onChange={(e) => setText(e.currentTarget.value)}
+          rows={30}
+        />
+        <div className="w-[500px] h-[500px]">
+          <canvas ref={canvasRef} className="hidden" />
+        </div>
+        <button className="btn btn-primary">{"Retry"}</button>
       </div>
-      <button className="btn btn-primary">{"Retry"}</button>
     </div>
   );
 }
