@@ -5,8 +5,6 @@ import Tesseract from "tesseract.js";
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [text, setText] = useState("...");
-  
-
   const [loading, setLoading] = useState(0);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -62,7 +60,10 @@ export default function Home() {
                   /[⑳]/g,
                   (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
                 )
-                .replace(/ /g, "");
+                .replace(/ /g, "")
+                .replace(/\n\n/g, "\n")
+                .replace(/(.*?)\n(.*?)\n(\d\d\d\d\/\d\d\/\d\d)/g, "\n")
+                ;
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
                 navigator.clipboard.writeText(newText);
