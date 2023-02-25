@@ -5,6 +5,7 @@ import Tesseract from "tesseract.js";
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [text, setText] = useState("...");
+  const [loading, setLoading] = useState(0);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -40,7 +41,7 @@ export default function Home() {
         img.src = URL.createObjectURL(blob);
         {
           const lang = "eng+jpn";
-          setText("loading");
+          setLoading((loading) => loading + 1);
           Tesseract.recognize(img, lang)
             .then(async (job) => {
               console.log(job);
@@ -48,19 +49,23 @@ export default function Home() {
               const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
               const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
               const text = job.data.text
-              .replace(/[①-⑨]/g, (ch) =>
-                String.fromCharCode(ch.charCodeAt(0) - diff1)
-              )
-              .replace(
-                /[⑩-⑲]/g,
-                (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
-              )
-              .replace(
-                /[⑳]/g,
-                (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
-              ).replace(/ /g, '')
-              setText(text);
-              await navigator.clipboard.writeText(text);
+                .replace(/[①-⑨]/g, (ch) =>
+                  String.fromCharCode(ch.charCodeAt(0) - diff1)
+                )
+                .replace(
+                  /[⑩-⑲]/g,
+                  (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
+                )
+                .replace(
+                  /[⑳]/g,
+                  (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
+                )
+                .replace(/ /g, "");
+              setText((t) => {
+                const newText = [t, text].filter(Boolean).join("\n");
+                navigator.clipboard.writeText(newText);
+                return newText;
+              });
             })
             .catch((error) => {
               console.log(error);
@@ -77,6 +82,7 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
+      {loading && <>⏳ Processing: ${loading}</>}
       <pre tabIndex={0} onClick={() => navigator.clipboard.writeText(text)}>
         {text}
       </pre>
