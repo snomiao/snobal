@@ -69,8 +69,12 @@ export default function Home() {
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
+                    const notes = (note as string) .replace(
+                      /( )[E風](.*?駅)/,
+                      (_, s, cho) => s + cho
+                    );
                     const s = [
-                      `${yyyy}-${MM}-${dd} * "TODO" "${pos} ${note}"`,
+                      `${yyyy}-${MM}-${dd} * "TODO" "${pos} ${notes}"`,
                       `   Assets:SuicaXR ${(-cost).toFixed(2)} JPY`,
                       `   Expenses:Commute ${cost.toFixed(2)} JPY`,
                     ].join("\n");
@@ -78,7 +82,6 @@ export default function Home() {
                   }
                 )
                 .replace(/(.*\n)+/, lineReversed)
-                .replace(/ E(.*?駅)/, (_, cho) => cho)
                 .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
