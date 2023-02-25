@@ -47,7 +47,7 @@ export default function Home() {
           Tesseract.recognize(img, lang)
             .then((job) => {
               console.log(job);
-              const text = job.data.text;
+              const text = job.data.text.replace(/⑳②②/,'');
               setText(text);
               new Clipboard().writeText(text);
             })
