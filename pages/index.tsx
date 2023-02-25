@@ -26,19 +26,16 @@ export default function Home() {
         const img = new Image();
         img.onload = function () {
           // just for debug
-          // const w = 500;
-          // const h = img.height * (w / img.width);
-          // canvas.width = w; //img.width;
-          // canvas.height = h; //img.height;
-          // const ctx = canvas.getContext("2d");
-          // if (!ctx) {
-          //   toast.error("ctx not found");
-          //   return;
-          // }
-          // ctx.drawImage(img, 0, 0, w, h);
-          // const base64 = canvas.toDataURL("image/png");
-          // console.log(base64); // base64-encoded image string
-          // ctx.clip = base64;
+          const w = 500;
+          const h = img.height * (w / img.width);
+          canvas.width = w; //img.width;
+          canvas.height = h; //img.height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            toast.error("ctx not found");
+            return;
+          }
+          ctx.drawImage(img, 0, 0, w, h);
         };
         img.src = URL.createObjectURL(blob);
         {
@@ -51,14 +48,14 @@ export default function Home() {
               const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
               const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
               const text = job.data.text
-                .replace(/[①-⑨]/, (ch) =>
+                .replace(/[①-⑨]/g, (ch) =>
                   String.fromCharCode(ch.charCodeAt(0) - diff1)
                 )
-                .replace(/[⑩-⑲]/, (ch) =>
-                  String.fromCharCode(ch.charCodeAt(0) - diff2)
+                .replace(/[⑩-⑲]/g, (ch) =>
+                  '1'+String.fromCharCode(ch.charCodeAt(0) - diff2)
                 )
-                .replace(/[⑳]/, (ch) =>
-                  String.fromCharCode(ch.charCodeAt(0) - diff3)
+                .replace(/[⑳]/g, (ch) =>
+                  '2'+String.fromCharCode(ch.charCodeAt(0) - diff3)
                 );
               setText(text);
               await new Clipboard().writeText(text);
@@ -78,7 +75,7 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
-      <pre>{text}</pre>
+      <pre tabIndex={9}>{text}</pre>
       <div className="w-[500px] h-[500px]">
         <canvas tabIndex={0} ref={canvasRef} className="hidden" />
       </div>
