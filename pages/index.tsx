@@ -113,11 +113,10 @@ export default function Home() {
             await navigator.clipboard.writeText(text);
             toast.success("text copied");
           }}
-          className="w-[500px] h-[120em]"
+          className="w-[500px] h-[80em]"
           style={{ width: "500px" }}
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
-          rows={120}
         />
         <div className="w-[500px] h-[500px]">
           <canvas ref={canvasRef} className="hidden" />
