@@ -21,8 +21,8 @@ export default function Home() {
           toast.error("Error: cannot read file that is not image");
           return;
         }
-        const blob = item.getAsFile();
-        if (!blob) return;
+        const file = item.getAsFile();
+        if (!file) return;
         console.log(item);
         // const blob = item.getAsFile (item.type);
         const img = new Image();
@@ -39,7 +39,7 @@ export default function Home() {
           }
           ctx.drawImage(img, 0, 0, w, h);
         };
-        img.src = URL.createObjectURL(blob);
+        img.src = URL.createObjectURL(file);
         {
           const lang = "eng+jpn";
           setLoading((loading) => loading + 1);
@@ -78,7 +78,8 @@ export default function Home() {
                   }
                 )
                 .replace(/(.*\n)+/, lineReversed)
-                .replace(/ E(.*?駅)/, (_, cho) => cho);
+                .replace(/ E(.*?駅)/, (_, cho) => cho)
+                .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
               setText((t) => {
                 const newText = [t, text].filter(Boolean).join("\n");
                 navigator.clipboard.writeText(newText);
