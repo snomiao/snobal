@@ -40,7 +40,7 @@ export default function Home() {
         img.src = URL.createObjectURL(blob);
         {
           const lang = "jpn";
-          Tesseract.recognize(img, lang)
+          Tesseract.recognize(img,lang,{})
             .then((job) => {
               console.log(job);
               setText(job.data.text);
