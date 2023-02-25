@@ -32,7 +32,7 @@ export default function Home() {
             toast.error("ctx not found");
             return;
           }
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0,500, img.height*(500/img.width));
           // const base64 = canvas.toDataURL("image/png");
           // console.log(base64); // base64-encoded image string
           // ctx.clip = base64;
