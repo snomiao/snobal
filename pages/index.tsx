@@ -4,7 +4,8 @@ import Tesseract from "tesseract.js";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [text, setText] = useState("...");
+  // const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [text, setText] = useState("; ");
   const [loading, setLoading] = useState(0);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -102,10 +103,10 @@ export default function Home() {
       <textarea
         tabIndex={0}
         onDoubleClick={() => navigator.clipboard.writeText(text)}
-        
-      >
-        {text}
-      </textarea>
+        value={text}
+        onChange={(e)=>setText(e.currentTarget.value)}
+        rows={30}
+      />
       <div className="w-[500px] h-[500px]">
         <canvas ref={canvasRef} className="hidden" />
       </div>
