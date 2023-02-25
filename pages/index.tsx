@@ -64,12 +64,12 @@ export default function Home() {
                 .replace(/ /g, "")
                 .replace(/\n\n/g, "\n")
                 .replace(
-                  /(.*?)(\+?[¥\\yY])([\d,]+)(?:・_)?\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+                  /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_)?\n(.*?)\n(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
                   (_, pos, signal, money, note, yyyy, MM, dd) => {
                     const sign = signal.startsWith("+") ? 1 : -1;
                     const cost = -sign * Number(money.replace(/,/, ""));
                     const notes = (note as string).replace(
-                      /( )[E風](.*?駅)/,
+                      /( )[E風回](.*?駅)/,
                       (_, s, cho) => s + cho
                     );
                     const s = [
