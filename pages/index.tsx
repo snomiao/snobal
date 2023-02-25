@@ -51,14 +51,16 @@ export default function Home() {
                 .replace(/[①-⑨]/g, (ch) =>
                   String.fromCharCode(ch.charCodeAt(0) - diff1)
                 )
-                .replace(/[⑩-⑲]/g, (ch) =>
-                  '1'+String.fromCharCode(ch.charCodeAt(0) - diff2)
+                .replace(
+                  /[⑩-⑲]/g,
+                  (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
                 )
-                .replace(/[⑳]/g, (ch) =>
-                  '2'+String.fromCharCode(ch.charCodeAt(0) - diff3)
+                .replace(
+                  /[⑳]/g,
+                  (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
                 );
               setText(text);
-              await new Clipboard().writeText(text);
+              await navigator.clipboard.writeText(text);
             })
             .catch((error) => {
               console.log(error);
@@ -75,7 +77,9 @@ export default function Home() {
   return (
     <div>
       <h1>Paste images here to recognize to text</h1>
-      <pre tabIndex={9}>{text}</pre>
+      <pre tabIndex={0} onClick={() => navigator.clipboard.writeText(text)}>
+        {text}
+      </pre>
       <div className="w-[500px] h-[500px]">
         <canvas tabIndex={0} ref={canvasRef} className="hidden" />
       </div>
