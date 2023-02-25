@@ -101,7 +101,8 @@ export default function Home() {
       {loading && <>⏳ Processing: {loading}</>}
       <textarea
         tabIndex={0}
-        onClick={() => navigator.clipboard.writeText(text)}
+        onDoubleClick={() => navigator.clipboard.writeText(text)}
+        
       >
         {text}
       </textarea>
