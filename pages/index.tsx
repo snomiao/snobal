@@ -18,7 +18,7 @@ export default function Home() {
         items.map(async (item) => {
           console.log(item);
           if (!item.type.startsWith("image")) {
-            toast.error("Error: cannot read file that is not image");
+            // toast.error("Error: cannot read file that is not image");
             return;
           }
           const file = item.getAsFile();
@@ -28,8 +28,8 @@ export default function Home() {
           const img = new Image();
           img.onload = function () {
             // just for debug
-            const w = 500;
-            const h = img.height * (w / img.width);
+            const w = img.width; // 500;
+            const h = img.height; // img.height * (w / img.width);
             canvas.width = w; //img.width;
             canvas.height = h; //img.height;
             const ctx = canvas.getContext("2d");
@@ -111,7 +111,9 @@ export default function Home() {
         {!!loading && <div>⏳ Processing: {loading}</div>}
       </header>
       <main className="flex flex-row justify-evenly">
-        <canvas ref={canvasRef} className="flex-1 w-full" />
+        <div className="flex-1">
+          <canvas ref={canvasRef} className="flex-1 w-full" />
+        </div>
         <textarea
           tabIndex={0}
           // onDoubleClick={async () => {
