@@ -136,25 +136,8 @@ export default function Home() {
   );
 }
 function suicaXrBeanParse(rawText: string) {
-  const diff1 = "①".charCodeAt(0) - "1".charCodeAt(0);
-  const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
-  const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
-  const text = rawText
-    .replace(/[①-⑨]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - diff1))
-    .replace(
-      /[⑩-⑲]/g,
-      (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
-    )
-    .replace(
-      /[⑳]/g,
-      (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
-    )
-    .replace(/ /g, "")
-    .replace(/\n\n/g, "\n")
-    .replace(
-      /(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
-      (_, yyyy, MM, dd) => `${yyyy}-${MM}-${dd}`
-    )
+  const preprocessedText = textPreprocess(rawText);
+  const text = preprocessedText
     .replace(
       /(.*?)(\+?[¥\\yYvV])([\d,]+)(?:・_|>)?(\n.*?\n|\n)(\d\d\d\d-\d\d-\d\d)/g,
       (_, pos, signal, money, noteLine, yyyyMMdd) => {
@@ -184,6 +167,29 @@ function suicaXrBeanParse(rawText: string) {
     )
     .replace(/(.*\n)+/, lineReversed);
   return text;
+}
+
+function textPreprocess(rawText: string) {
+  const diff1 = "①".charCodeAt(0) - "1".charCodeAt(0);
+  const diff2 = "⑩".charCodeAt(0) - "0".charCodeAt(0);
+  const diff3 = "⑳".charCodeAt(0) - "0".charCodeAt(0);
+  const preprocessedText = rawText
+    .replace(/[①-⑨]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - diff1))
+    .replace(
+      /[⑩-⑲]/g,
+      (ch) => "1" + String.fromCharCode(ch.charCodeAt(0) - diff2)
+    )
+    .replace(
+      /[⑳]/g,
+      (ch) => "2" + String.fromCharCode(ch.charCodeAt(0) - diff3)
+    )
+    .replace(/ /g, "")
+    .replace(/\n\n/g, "\n")
+    .replace(
+      /(\d\d\d\d)\/(\d\d)\/(\d\d)/g,
+      (_, yyyy, MM, dd) => `${yyyy}-${MM}-${dd}`
+    );
+  return preprocessedText;
 }
 
 function lineReversed(s: string): string {
