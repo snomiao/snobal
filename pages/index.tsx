@@ -86,7 +86,9 @@ export default function Home() {
             setText((t) => {
               const newText = [
                 t,
-                text.replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`),
+                textPreprocess(
+                  text.replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`)
+                ),
               ]
                 .filter(Boolean)
                 .join("\n");
