@@ -84,10 +84,12 @@ export default function Home() {
             // extract text
             const text = job.data.text;
             setText((t) => {
-              const newText = [t, text]
+              const newText = [
+                t,
+                text.replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`),
+              ]
                 .filter(Boolean)
-                .join("\n")
-                .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
+                .join("\n");
               navigator.clipboard.writeText(newText);
               return newText;
             });
