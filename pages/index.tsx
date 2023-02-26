@@ -33,10 +33,7 @@ export default function Home() {
             canvas.width = w; //img.width;
             canvas.height = h; //img.height;
             const ctx = canvas.getContext("2d");
-            if (!ctx) {
-              toast.error("ctx not found");
-              return;
-            }
+            if (!ctx) return;
             ctx.drawImage(img, 0, 0, w, h);
           };
           img.src = URL.createObjectURL(file);
@@ -59,13 +56,30 @@ export default function Home() {
             if (hocr) {
               const doc = new DOMParser().parseFromString(hocr, "text/html");
               const sections = [...doc.querySelectorAll("span")]
-                .filter((s) => s.innerHTML)
-                .map((span) =>
-                  span.title
-                    ?.match(/bbox (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
-                    ?.slice(1)
-                )
-                .filter(Boolean); // flatMap
+                .filter((s) => s.innerText.trim())
+                .map((span) => ({
+                  text: span.innerText.trim(),
+                  ...[
+                    span.title
+                      ?.match(/bbox (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
+                      ?.slice(1)
+                      .map(Number) as [number, number, number, number],
+                  ]
+                    .flatMap((e) => (e ? [e] : []))
+                    .map(([x, y, x1, y1]) => ({
+                      x,
+                      y,
+                      w: x1 - x,
+                      h: y1 - y,
+                    }))[0],
+                })); // flatMap
+
+              const ctx = canvas.getContext("2d");
+              if (!ctx) return;
+              sections.map(({ text, h, w, x, y }) => {
+                ctx.strokeText(text, x, y);
+                ctx.strokeRect(x, y, w, h);
+              });
             }
             // extract text
             const text = job.data.text;
@@ -98,12 +112,12 @@ export default function Home() {
           //   await navigator.clipboard.writeText(text);
           //   toast.success("text copied");
           // }}
-          className="flex-1 h-[80em]"
+          className="flex-1 h-[50vh]"
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
         />
         <pre
-          className="flex-1 h-[80em]"
+          className="flex-1 h-[50vh]"
           onClick={async () => {
             await navigator.clipboard.writeText(suicaXrBeanParse(text));
             toast.success("text copied");
@@ -113,7 +127,7 @@ export default function Home() {
         </pre>
       </div>
       <div className="w-[500px] h-[500px]">
-        <canvas ref={canvasRef} className="hidden" />
+        <canvas ref={canvasRef} />
       </div>
       <Toaster />
     </div>
