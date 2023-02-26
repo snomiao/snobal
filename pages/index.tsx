@@ -78,7 +78,7 @@ export default function Home() {
               if (!ctx) return;
               sections.map(({ text, h, w, x, y }) => {
                 ctx.fillText(text, x, y + h);
-                ctx.strokeRect(x, y, w, h);
+                ctx.strokeRect(x, y+h, w, 1);
               });
             }
             // extract text
