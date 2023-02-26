@@ -104,22 +104,26 @@ export default function Home() {
     return () => document.body.removeEventListener("paste", onPaste);
   });
   return (
-    <div>
-      <h1>Paste images here to recognize to text</h1>
-      {!!loading && <div>⏳ Processing: {loading}</div>}
-      <div className="flex flex-row justify-evenly">
+    <div className="h-[100vh]">
+      <header className="flex-0">
+        {" "}
+        <h1>Paste images here to recognize to text</h1>
+        {!!loading && <div>⏳ Processing: {loading}</div>}
+      </header>
+      <main className="flex flex-row justify-evenly">
+        <canvas ref={canvasRef} className="flex-1 w-full" />
         <textarea
           tabIndex={0}
           // onDoubleClick={async () => {
           //   await navigator.clipboard.writeText(text);
           //   toast.success("text copied");
           // }}
-          className="flex-1 h-[50vh]"
+          className="flex-1"
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
         />
         <pre
-          className="flex-1 h-[50vh]"
+          className="flex-1"
           onClick={async () => {
             await navigator.clipboard.writeText(suicaXrBeanParse(text));
             toast.success("text copied");
@@ -127,10 +131,7 @@ export default function Home() {
         >
           {suicaXrBeanParse(text)}
         </pre>
-      </div>
-      <div className="w-[500px] h-[500px]">
-        <canvas ref={canvasRef} />
-      </div>
+      </main>
       <Toaster />
     </div>
   );
