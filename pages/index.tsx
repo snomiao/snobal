@@ -40,7 +40,7 @@ export default function Home() {
         };
         img.src = URL.createObjectURL(file);
         {
-          const lang = "eng+jpn";
+          const lang = "eng+jpn+chn_sim";
           setLoading((loading) => loading + 1);
           toast("Image pasted! processing");
           Tesseract.recognize(img, lang)
