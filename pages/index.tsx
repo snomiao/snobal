@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import Tesseract from "tesseract.js";
 
 export default function Home() {
@@ -9,64 +9,80 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const onPaste = (evt: ClipboardEvent) => {
+    const onPaste = async (evt: ClipboardEvent) => {
       if (document.activeElement === canvas) return; // not focused
       const dT = evt.clipboardData;
       const items = [...(dT?.items ?? [])];
-      console.log(items);
-      items.map((item) => {
-        console.log(item);
-        if (!item.type.startsWith("image")) {
-          toast.error("Error: cannot read file that is not image");
-          return;
-        }
-        const file = item.getAsFile();
-        if (!file) return;
-        console.log(item);
-        // const blob = item.getAsFile (item.type);
-        const img = new Image();
-        img.onload = function () {
-          // just for debug
-          const w = 500;
-          const h = img.height * (w / img.width);
-          canvas.width = w; //img.width;
-          canvas.height = h; //img.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            toast.error("ctx not found");
+      // console.log(items);
+      await Promise.all(
+        items.map(async (item) => {
+          console.log(item);
+          if (!item.type.startsWith("image")) {
+            toast.error("Error: cannot read file that is not image");
             return;
           }
-          ctx.drawImage(img, 0, 0, w, h);
-        };
-        img.src = URL.createObjectURL(file);
-        {
-          const lang = "eng+jpn+chn_sim";
-          setLoading((loading) => loading + 1);
-          toast("Image pasted! processing");
-          Tesseract.recognize(img, lang)
-            .then(async (job) => {
-              console.log(job);
-              const text = job.data.text;
-              setText((t) => {
-                const newText = [t, text]
-                  .filter(Boolean)
-                  .join("\n")
-                  .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
-                navigator.clipboard.writeText(newText);
-                return newText;
+          const file = item.getAsFile();
+          if (!file) return;
+          console.log(item);
+          // const blob = item.getAsFile (item.type);
+          const img = new Image();
+          img.onload = function () {
+            // just for debug
+            const w = 500;
+            const h = img.height * (w / img.width);
+            canvas.width = w; //img.width;
+            canvas.height = h; //img.height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+              toast.error("ctx not found");
+              return;
+            }
+            ctx.drawImage(img, 0, 0, w, h);
+          };
+          img.src = URL.createObjectURL(file);
+          {
+            const lang = "eng+jpn+chn_sim";
+            setLoading((loading) => loading + 1);
+            toast("Image pasted! processing");
+            const job = await Tesseract.recognize(img, lang)
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {
+                setLoading((loading) => loading - 1);
               });
-            })
-            .catch((error) => {
-              console.log(error);
-            })
-            .finally(() => {
-              setLoading((loading) => loading - 1);
+            if (!job) return; //error
+
+            // extract hocr document
+
+            const hocr = job.data.hocr;
+            if (hocr) {
+              const doc = new DOMParser().parseFromString(hocr, "text/html");
+              const sections = [...doc.querySelectorAll("span")]
+                .filter((s) => s.innerHTML)
+                .map((span) =>
+                  span.title
+                    ?.match(/bbox (-?\d+) (-?\d+) (-?\d+) (-?\d+)/)
+                    ?.slice(1)
+                )
+                .filter(Boolean); // flatMap
+            }
+            // extract text
+            const text = job.data.text;
+            setText((t) => {
+              const newText = [t, text]
+                .filter(Boolean)
+                .join("\n")
+                .replace(/(.*\n)+/, (e) => `\n; img: ${file.name}\n${e}`);
+              navigator.clipboard.writeText(newText);
+              return newText;
             });
 
-          // const ctx = canvas.getContext();
-          // ctx?.putImageData(new ImageData(new Uint8ClampedArray.from(blob)));
-        }
-      });
+            // const ctx = canvas.getContext();
+            // ctx?.putImageData(new ImageData(new Uint8ClampedArray.from(blob)));
+          }
+        })
+      );
     };
     document.body.addEventListener("paste", onPaste);
     return () => document.body.removeEventListener("paste", onPaste);
@@ -99,6 +115,7 @@ export default function Home() {
       <div className="w-[500px] h-[500px]">
         <canvas ref={canvasRef} className="hidden" />
       </div>
+      <Toaster />
     </div>
   );
 }
