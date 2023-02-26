@@ -38,7 +38,7 @@ export default function Home() {
           };
           img.src = URL.createObjectURL(file);
           {
-            const lang = "eng+jpn+chn_sim";
+            const lang = "eng+jpn+chi_sim";
             setLoading((loading) => loading + 1);
             toast("Image pasted! processing");
             const job = await Tesseract.recognize(img, lang)
