@@ -106,8 +106,7 @@ export default function Home() {
   return (
     <div className="h-[100vh]">
       <header className="flex-0">
-        {" "}
-        <h1>Paste images here to recognize to text</h1>
+        <h1 className="text-lg">Paste images here to recognize to text</h1>
         {!!loading && <div>⏳ Processing: {loading}</div>}
       </header>
       <main className="flex flex-row justify-evenly">
