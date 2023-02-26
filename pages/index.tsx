@@ -73,7 +73,6 @@ export default function Home() {
                       h: y1 - y,
                     }))[0],
                 })); // flatMap
-
               const ctx = canvas.getContext("2d");
               if (!ctx) return;
               sections.map(({ text, h, w, x, y }) => {
