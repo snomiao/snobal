@@ -77,7 +77,7 @@ export default function Home() {
               const ctx = canvas.getContext("2d");
               if (!ctx) return;
               sections.map(({ text, h, w, x, y }) => {
-                ctx.strokeText(text, x, y);
+                ctx.strokeText(text, x, y - h);
                 ctx.strokeRect(x, y, w, h);
               });
             }
